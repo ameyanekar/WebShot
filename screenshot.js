@@ -4,6 +4,7 @@ const fs = require('fs');
 
 let weburl = process.argv[2];
 let path = process.argv[3];
+let home = __dirname;
 
 if (!validUrl.isUri(weburl)) {
 	console.log('Not a URI');
@@ -20,9 +21,17 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 	const page = await browser.newPage();
 	try {
 		await page.goto(weburl, { waitUntil: 'load', timeout: 10000 });
+		await page.screenshot({
+			path: path + weburl.replace(/\/|:/g, '_') + '.png',
+		});
 	} catch (e) {
-		//
+		fs.copyFile(
+			home + '/screenshots/screenshot-error.png',
+			path + weburl.replace(/\/|:/g, '_') + '.png',
+			async () => {
+				await browser.close();
+			}
+		);
 	}
-	await page.screenshot({ path: path + weburl.replace(/\//g, '_') + '.png' });
 	await browser.close();
 })();
