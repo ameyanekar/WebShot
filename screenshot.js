@@ -27,7 +27,7 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 	});
 	const page = await browser.newPage();
 	try {
-		await page.goto(weburl, { waitUntil: 'load', timeout: 10000 });
+		await page.goto(weburl, { waitUntil: 'load', timeout: 30000 });
 		await page.screenshot({
 			path: path + '/' + weburl.replace(/\/|:/g, '_') + '.png',
 		});
