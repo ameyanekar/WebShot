@@ -21,7 +21,10 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 }
 
 (async () => {
-	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+	const browser = await puppeteer.launch({
+		ignoreHTTPSErrors: true,
+		args: ['--no-sandbox'],
+	});
 	const page = await browser.newPage();
 	try {
 		await page.goto(weburl, { waitUntil: 'load', timeout: 10000 });
@@ -29,6 +32,7 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 			path: path + weburl.replace(/\/|:/g, '_') + '.png',
 		});
 	} catch (e) {
+		console.log('Caught Error: ', e);
 		fs.copyFile(
 			home + '/screenshots/screenshot-error.png',
 			path + weburl.replace(/\/|:/g, '_') + '.png',
