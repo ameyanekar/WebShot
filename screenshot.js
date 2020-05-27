@@ -32,7 +32,7 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 			path: path + '/' + weburl.replace(/\/|:/g, '_') + '.png',
 		});
 	} catch (e) {
-		console.log('Caught Error: ', e);
+		console.log('Caught Error: ', weburl, e);
 		fs.copyFile(
 			home + '/screenshots/screenshot-error.png',
 			path + '/' + weburl.replace(/\/|:/g, '_') + '.png',
