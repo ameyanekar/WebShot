@@ -29,13 +29,13 @@ if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
 	try {
 		await page.goto(weburl, { waitUntil: 'load', timeout: 10000 });
 		await page.screenshot({
-			path: path + weburl.replace(/\/|:/g, '_') + '.png',
+			path: path + '/' + weburl.replace(/\/|:/g, '_') + '.png',
 		});
 	} catch (e) {
 		console.log('Caught Error: ', e);
 		fs.copyFile(
 			home + '/screenshots/screenshot-error.png',
-			path + weburl.replace(/\/|:/g, '_') + '.png',
+			path + '/' + weburl.replace(/\/|:/g, '_') + '.png',
 			async () => {
 				await browser.close();
 			}
