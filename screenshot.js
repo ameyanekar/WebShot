@@ -6,13 +6,17 @@ let weburl = process.argv[2];
 let path = process.argv[3];
 let home = __dirname;
 
+let usage = () => {
+	console.log('Usage: node screenshot.js https://example.com /tmp/');
+};
+
 if (!validUrl.isUri(weburl)) {
-	console.log('Not a URI');
+	usage();
 	process.exit();
 }
 
 if (!(fs.existsSync(path) && fs.lstatSync(path).isDirectory())) {
-	console.log('Not a valid directory!');
+	console.log(path + ' is not a valid directory!');
 	process.exit();
 }
 
