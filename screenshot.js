@@ -91,19 +91,19 @@ if (weburlFile) {
 		// If forceEnabled, screenshot any way
 		// If file does not exist or is a screenshot error, then screenshot. Else, skip.
 		if (forceEnabled) {
-			console.log('Screenshot: Because Forced');
+			// console.log('Screenshot: Because Forced');
 			cluster.queue(weburl);
 		} else if (
 			!fs.existsSync(destination + '/' + weburl.replace(/\/|:/g, '_') + '.png')
 		) {
-			console.log('Screenshot: File does not exist');
+			// console.log('Screenshot: File does not exist');
 			cluster.queue(weburl);
 		} else if (
 			sha1File.sync(
 				destination + '/' + weburl.replace(/\/|:/g, '_') + '.png'
 			) === 'eecdf9673374064d6aded1ac4e9209e56e8fe4df'
 		) {
-			console.log('Screenshot: Old File was error');
+			// console.log('Screenshot: Old File was error');
 			cluster.queue(weburl);
 		}
 	});
