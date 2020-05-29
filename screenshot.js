@@ -10,6 +10,11 @@ let destination = argv._[0];
 let rootDir = __dirname;
 let forceEnabled = argv.force;
 
+let getDate = () => {
+	let now = new Date();
+	return now.toUTCString();
+};
+
 let usage = () => {
 	console.log(
 		'Usage: node screenshot.js [-u https://example.com] [-f /tmp/file.txt] /save/screenshot/here'
@@ -72,7 +77,7 @@ if (weburlFile) {
 
 	// Event handler to be called in case of problems
 	cluster.on('taskerror', (err, data) => {
-		console.error(`Error crawling ${data}: ${err.message}`);
+		console.log(`${getDate()}: Error crawling ${data}: ${err.message}`);
 		fs.copyFileSync(
 			rootDir + '/screenshots/screenshot-error.png',
 			destination + '/' + data.replace(/\/|:/g, '_') + '.png'
@@ -88,6 +93,7 @@ if (weburlFile) {
 	});
 
 	weburls.forEach((weburl) => {
+		console.log(`${getDate()}: Screenshotting ${weburl}`);
 		// If forceEnabled, screenshot any way
 		// If file does not exist or is a screenshot error, then screenshot. Else, skip.
 		if (forceEnabled) {
@@ -105,6 +111,8 @@ if (weburlFile) {
 		) {
 			// console.log('Screenshot: Old File was error');
 			cluster.queue(weburl);
+		} else {
+			console.log(`${getDate()}: Screenshot Skipped: ${weburl}`);
 		}
 	});
 
