@@ -2,11 +2,13 @@ const { Cluster } = require('puppeteer-cluster');
 const fs = require('fs');
 const argv = require('yargs').argv;
 const path = require('path');
+const sha1File = require('sha1-file');
 
 let weburl = argv.u;
 let weburlFile = argv.f;
 let destination = argv._[0];
 let rootDir = __dirname;
+let forceEnabled = argv.force;
 
 let usage = () => {
 	console.log(
@@ -40,15 +42,17 @@ if (!(fs.existsSync(destination) && fs.lstatSync(destination).isDirectory())) {
 	process.exit();
 }
 
-if (!fs.existsSync(weburlFile)) {
-	console.error(weburlFile + ' does not exist!');
-	process.exit();
-} else if (path.extname(weburlFile) !== '.txt') {
-	console.error(weburlFile + ' is not a text file!');
-	process.exit();
+if (weburlFile) {
+	if (!fs.existsSync(weburlFile)) {
+		console.error(weburlFile + ' does not exist!');
+		process.exit();
+	} else if (path.extname(weburlFile) !== '.txt') {
+		console.error(weburlFile + ' is not a text file!');
+		process.exit();
+	}
 }
 
-let weburls;
+let weburls = [];
 
 if (weburlFile) {
 	weburls = fs.readFileSync(weburlFile).toString().trim().split('\n');
@@ -84,7 +88,24 @@ if (weburlFile) {
 	});
 
 	weburls.forEach((weburl) => {
-		cluster.queue(weburl);
+		// If forceEnabled, screenshot any way
+		// If file does not exist or is a screenshot error, then screenshot. Else, skip.
+		if (forceEnabled) {
+			console.log('Screenshot: Because Forced');
+			cluster.queue(weburl);
+		} else if (
+			!fs.existsSync(destination + '/' + weburl.replace(/\/|:/g, '_') + '.png')
+		) {
+			console.log('Screenshot: File does not exist');
+			cluster.queue(weburl);
+		} else if (
+			sha1File.sync(
+				destination + '/' + weburl.replace(/\/|:/g, '_') + '.png'
+			) === 'eecdf9673374064d6aded1ac4e9209e56e8fe4df'
+		) {
+			console.log('Screenshot: Old File was error');
+			cluster.queue(weburl);
+		}
 	});
 
 	await cluster.idle();
