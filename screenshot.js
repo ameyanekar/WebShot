@@ -93,15 +93,16 @@ if (weburlFile) {
 	});
 
 	weburls.forEach((weburl) => {
-		console.log(`${getDate()}: Screenshotting ${weburl}`);
 		// If forceEnabled, screenshot any way
 		// If file does not exist or is a screenshot error, then screenshot. Else, skip.
 		if (forceEnabled) {
 			// console.log('Screenshot: Because Forced');
+			// console.log(`${getDate()}: Screenshotting ${weburl}`);
 			cluster.queue(weburl);
 		} else if (
 			!fs.existsSync(destination + '/' + weburl.replace(/\/|:/g, '_') + '.png')
 		) {
+			// console.log(`${getDate()}: Screenshotting ${weburl}`);
 			// console.log('Screenshot: File does not exist');
 			cluster.queue(weburl);
 		} else if (
@@ -110,9 +111,12 @@ if (weburlFile) {
 			) === 'eecdf9673374064d6aded1ac4e9209e56e8fe4df'
 		) {
 			// console.log('Screenshot: Old File was error');
+			console.log(
+				`${getDate()}: Screenshotting ${weburl}: Old File was erroneous`
+			);
 			cluster.queue(weburl);
 		} else {
-			console.log(`${getDate()}: Screenshot Skipped: ${weburl}`);
+			// console.log(`${getDate()}: Screenshot Skipped: ${weburl}`);
 		}
 	});
 
