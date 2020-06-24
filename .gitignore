@@ -1,4 +1,4 @@
 node_modules/
 screenshots/*
 !screenshots/.gitkeep
-!screenshots/screenshot-error.png
+!screenshots/DO-NOT-DELETE.png

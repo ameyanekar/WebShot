@@ -1,18 +1,19 @@
 {
-  "name": "weburl-screenshot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "screenshot.js",
-  "dependencies": {
-    "puppeteer": "^3.1.0",
-    "puppeteer-cluster": "^0.21.0",
-    "sha1-file": "^2.0.0",
-    "yargs": "^15.3.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Amey Anekar",
-  "license": "ISC"
+	"name": "web-shot",
+	"version": "1.0.0",
+	"description": "Captures Screenshots of Web URLs",
+	"main": "screenshot.js",
+	"dependencies": {
+		"colors": "^1.4.0",
+		"puppeteer": "^3.1.0",
+		"puppeteer-cluster": "^0.21.0",
+		"sha1-file": "^2.0.0",
+		"yargs": "^15.3.1"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Amey Anekar",
+	"license": "ISC"
 }
