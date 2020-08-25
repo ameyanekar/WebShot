@@ -41,7 +41,7 @@ Arguments:
         -s              Suppress CLI Output
         -c              Number of concurrent sessions (Default: 5)
         -t              Navigation Timeout in seconds (Default: 30)
-		--cookies       Cookies to add to the request for pages requiring an authenticated session (E.g.: "cookie=value1; cookie2=value2" )
+        --cookies       Cookies to add to the request for pages requiring an authenticated session (E.g.: "cookie=value1; cookie2=value2" )
         --force         By default, the tool will skip screenshots for URLs already present in the destination directory.
                         Use -force flag to override this behaviour.
                         If earlier screenshot was a failure, the tool will attempt the screenshot even without the force flag.
