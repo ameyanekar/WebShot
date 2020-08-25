@@ -2,3 +2,4 @@ node_modules/
 screenshots/*
 !screenshots/.gitkeep
 !screenshots/DO-NOT-DELETE.png
+.DS_Store
