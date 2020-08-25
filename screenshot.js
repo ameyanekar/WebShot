@@ -136,10 +136,14 @@ if (weburlFile) {
 			console.log(
 				`${getDate()}: Error crawling ${data.weburl}: ${err.message}`
 			);
-		fs.copyFileSync(
-			rootDir + '/screenshots/DO-NOT-DELETE.png',
-			destination + '/' + data.weburl.replace(/\/|:/g, '_') + '.png'
-		);
+		try {
+			fs.copyFileSync(
+				rootDir + '/screenshots/DO-NOT-DELETE.png',
+				destination + '/' + data.weburl.replace(/\/|:/g, '_') + '.png'
+			);
+		} catch {
+			console.log(`${getDate()}: Error writing to file`);
+		}
 	});
 
 	let firstExecution = true;
