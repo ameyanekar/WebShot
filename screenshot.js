@@ -29,16 +29,17 @@ let usage = () => {
 Usage: node screenshot.js [-u https://example.com] [-f /home/user/subdomains.txt] [-o /save/screenshots/here]
 		
 Arguments:
-	-h		Show this help message and exit
-	-u		URL to screenshot
-	-f		File containing URLs to screenshot
-	-o		Save screenshots to this directory. If not provided, screenshots will be stored to screenshots directory.
-	-s		Suppress CLI Output
-	-c		Number of concurrent sessions (Default: 5)
-	-t		Navigation Timeout in seconds (Default: 30)
+	-h			Show this help message and exit
+	-u			URL to screenshot
+	-f			File containing URLs to screenshot
+	-o			Save screenshots to this directory. If not provided, screenshots will be stored to screenshots directory.
+	-s			Suppress CLI Output
+	-c			Number of concurrent sessions (Default: 5)
+	-t			Navigation Timeout in seconds (Default: 30)
+	--cookies	Cookies to add to the request for pages requiring an authenticated session (E.g.: "cookie=value1; cookie2=value2" )
 	--force		By default, the tool will skip screenshots for URLs already present in the destination directory.
-			Use -force flag to override this behaviour.
-			If earlier screenshot was a failure, the tool will attempt the screenshot even without the force flag.
+				Use --force flag to override this behaviour.
+				If earlier screenshot was a failure, the tool will attempt the screenshot even without the force flag.
 `.green
 	);
 };
@@ -66,6 +67,7 @@ let forceEnabled = argv.force;
 let concurrentSessions = argv.c && typeof argv.c === 'number' ? argv.c : 5;
 let suppressCLI = argv.s;
 let timeout = argv.t && typeof argv.t === 'number' ? argv.t * 1000 : 30000;
+let cookies = argv.cookies;
 
 let getDate = () => {
 	let now = new Date();
@@ -102,6 +104,10 @@ if (weburlFile) {
 	}
 }
 
+if (cookies) {
+	cookiesArray = cookies.replace(/\s/g, '').split(';');
+}
+
 let weburls = [];
 
 banner();
@@ -121,6 +127,7 @@ if (weburlFile) {
 		puppeteerOptions: {
 			ignoreHTTPSErrors: true,
 			args: ['--no-sandbox'],
+			headless: false,
 		},
 	});
 
@@ -143,6 +150,16 @@ if (weburlFile) {
 					data.reason ? ': ' + data.reason : ''
 				}`
 			);
+
+		if (cookies) {
+			cookiesArray.forEach(async (cookie) => {
+				name = cookie.split('=')[0];
+				value = cookie.split('=')[1];
+
+				if (name && value)
+					await page.setCookie({ name, value, url: data.weburl });
+			});
+		}
 		await page.goto(data.weburl, { waitUntil: 'load', timeout });
 		await page.screenshot({
 			path: destination + '/' + data.weburl.replace(/\/|:/g, '_') + '.png',
