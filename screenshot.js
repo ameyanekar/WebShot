@@ -44,9 +44,9 @@ Arguments:
 	);
 };
 
-let isValidURL = (url) => {
+let isValidURL = (inputUrl) => {
 	if (
-		url.match(
+		inputUrl.match(
 			/^https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
 		)
 	)
@@ -122,12 +122,11 @@ if (weburlFile) {
 
 (async () => {
 	const cluster = await Cluster.launch({
-		concurrency: Cluster.CONCURRENCY_CONTEXT,
+		concurrency: Cluster.CONCURRENCY_PAGE,
 		maxConcurrency: concurrentSessions,
 		puppeteerOptions: {
 			ignoreHTTPSErrors: true,
 			args: ['--no-sandbox'],
-			headless: false,
 		},
 	});
 
@@ -143,6 +142,8 @@ if (weburlFile) {
 		);
 	});
 
+	let firstExecution = true;
+
 	await cluster.task(async ({ page, data }) => {
 		if (!suppressCLI)
 			console.log(
@@ -151,16 +152,20 @@ if (weburlFile) {
 				}`
 			);
 
-		if (cookies) {
+		// Set cookies only on first execution. Post that let Chrome manage cookies
+		if (cookies && firstExecution) {
+			firstExecution = false;
 			cookiesArray.forEach(async (cookie) => {
 				name = cookie.split('=')[0];
 				value = cookie.split('=')[1];
-
+				const url = new URL(data.weburl);
 				if (name && value)
-					await page.setCookie({ name, value, url: data.weburl });
+					await page.setCookie({ name, value, domain: url.host });
 			});
 		}
-		await page.goto(data.weburl, { waitUntil: 'load', timeout });
+
+		await page.goto(data.weburl, { waitUntil: 'networkidle0', timeout });
+
 		await page.screenshot({
 			path: destination + '/' + data.weburl.replace(/\/|:/g, '_') + '.png',
 		});
